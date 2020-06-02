@@ -1,42 +1,57 @@
 ﻿<Window x:Class="GitTool.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GitTool"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:local="clr-namespace:GitTool" Height="180" Width="750" ResizeMode="NoResize">
     <Window.DataContext>
         <local:MainWindow_Model />
     </Window.DataContext>
-    <Grid>
+    <Window.Resources>
+        <ResourceDictionary>
+            <Style TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+                <Setter Property="Margin" Value="0 10" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="Margin" Value="5" />
+            </Style>
+            <Style TargetType="TextBox">
+                <Setter Property="Padding" Value="5" />
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="5">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            
-            <TextBlock Text="仓库地址:"/>
-            <TextBox Text="{Binding RepositoryPath}"/>
-            <Button Content="选择仓库地址"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="仓库地址" />
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding RepositoryPath}" Name="path" />
+        <Button Grid.Row="0" Grid.Column="6" Content="选择仓库地址" Command="{Binding SelectPathCommand}" />
 
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="1" Text="{Binding OldEmail}"/>
-            <TextBox Grid.Column="2" Text="{Binding NewName}"/>
-            <TextBox Grid.Column="3" Text="{Binding NewEmail}"/>
-            <Button Grid.Column="4" Content="执行" Command="{Binding UpdateCommand}" />
-        </Grid>
-        <ListBox Grid.Row="1" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Email" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding OldEmail}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="2" Text="New Name" />
+        <TextBox Grid.Row="1" Grid.Column="3" Text="{Binding NewName}" />
+
+        <TextBlock Grid.Row="1" Grid.Column="4" Text="New Email" />
+        <TextBox Grid.Row="1" Grid.Column="5" Text="{Binding NewEmail}" />
+
+        <Button Grid.Row="1" Grid.Column="6" Content="执行更新" Command="{Binding UpdateCommand}" />
+        
+        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding Message.Value}" Foreground="{Binding Message.Key}"/>
     </Grid>
 </Window>

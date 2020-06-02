@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 
 namespace GitTool
 {
@@ -10,6 +11,14 @@ namespace GitTool
         public MainWindow()
         {
             InitializeComponent();
+            AllowDrop = true;
+            Drop += OnDrop;
+        }
+
+        void OnDrop(object sender, DragEventArgs e)
+        {
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[] ?? new string[] { };
+            path.Text = files.FirstOrDefault();
         }
     }
 }

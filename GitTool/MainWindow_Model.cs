@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows.Input;
+using System.Windows.Media;
+using GitTool.CLI;
 using GitTool.Common;
-using LibGit2Sharp;
+using WPFFolderBrowser;
 
 namespace GitTool
 {
@@ -15,37 +17,36 @@ namespace GitTool
         public string OldEmail { get; set; }
         public string NewName { get; set; }
         public string NewEmail { get; set; }
+        public KeyValuePair<Brush, string> Message { get; set; }
+
+        public ICommand SelectPathCommand => new Command(OnSelectPath);
 
         public ICommand UpdateCommand => new Command(OnUpdate);
 
+        void OnSelectPath()
+        {
+            var dialog = new WPFFolderBrowserDialog();
+            dialog.ShowDialog();
+            RepositoryPath = dialog.FileName;
+        }
+
         public void OnUpdate()
         {
-            var repository = new Repository(RepositoryPath);
-            var commitsToRewrite = repository.Commits;
-            var identity = new Identity(NewName, NewEmail);
-
-            repository.Refs.RewriteHistory(new RewriteHistoryOptions
+            Message = default;
+            try
             {
-                BackupRefsNamespace = "test111",
-                CommitHeaderRewriter = commit =>
+                var res = Program.Run(new Params
                 {
-                    if (commit.Author.Email == OldEmail) return CommitRewriteInfo.From(commit, new Signature(identity, DateTimeOffset.Now));
-                    Debug.WriteLine(commit.Author.Name);
-                    return CommitRewriteInfo.From(commit);
-                },
-                OnError = OnError,
-                OnSucceeding = OnSucceeding,
-            }, commitsToRewrite);
-        }
-
-        void OnSucceeding()
-        {
-            Debug.WriteLine("OnSucceeding");
-        }
-
-        void OnError(Exception obj)
-        {
-            Debug.WriteLine("OnError");
+                    RepositoryPath = RepositoryPath,
+                    Email = OldEmail,
+                    NewAuthor = $"{NewName} <{NewEmail}>"
+                });
+                Message = new KeyValuePair<Brush, string>(res.success ? Brushes.ForestGreen : Brushes.IndianRed, res.message);
+            }
+            catch (Exception e)
+            {
+                Message = new KeyValuePair<Brush, string>(Brushes.IndianRed, e.Message);
+            }
         }
     }
 }
