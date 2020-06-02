@@ -11,39 +11,41 @@ namespace GitTool
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string RepositoryPath { get; set; }
-
+        public string RepositoryPath { get; set; } = @"D:\SourceCode\Me\lgy-studio";
         public string OldEmail { get; set; }
-
+        public string NewName { get; set; }
         public string NewEmail { get; set; }
-
-        public string NewUserName { get; set; }
 
         public ICommand UpdateCommand => new Command(OnUpdate);
 
         public void OnUpdate()
         {
-            var repository = new Repository(@"D:\SourceCode\Me\lgy-studio");
+            var repository = new Repository(RepositoryPath);
+            var commitsToRewrite = repository.Commits;
+            var identity = new Identity(NewName, NewEmail);
 
-            var head = repository.Head;
-            var trackedBranch = head.TrackedBranch;
-            var identity = new Identity("leo", "xz@lgysh.cn");
-            
-
-            // var rebaseResult = repository.Rebase.Start(head, trackedBranch, null, identity, new RebaseOptions());
-
-
-            Debug.WriteLine("=======Commits====");
-
-            foreach (var commit in repository.Commits)
+            repository.Refs.RewriteHistory(new RewriteHistoryOptions
             {
-                Debug.WriteLine(commit.Sha);
-                if (commit.Sha == "a8ce505d2abfb7157ce4a98f8b067b4c82f85b69")
+                BackupRefsNamespace = "test111",
+                CommitHeaderRewriter = commit =>
                 {
-                    var cherryPickResult = repository.CherryPick(commit, new Signature(identity, DateTimeOffset.Now));
-                    
-                }
-            }
+                    if (commit.Author.Email == OldEmail) return CommitRewriteInfo.From(commit, new Signature(identity, DateTimeOffset.Now));
+                    Debug.WriteLine(commit.Author.Name);
+                    return CommitRewriteInfo.From(commit);
+                },
+                OnError = OnError,
+                OnSucceeding = OnSucceeding,
+            }, commitsToRewrite);
+        }
+
+        void OnSucceeding()
+        {
+            Debug.WriteLine("OnSucceeding");
+        }
+
+        void OnError(Exception obj)
+        {
+            Debug.WriteLine("OnError");
         }
     }
 }
