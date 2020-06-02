@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using LibGit2Sharp;
 
 namespace GitTool.CLI
@@ -19,9 +20,12 @@ namespace GitTool.CLI
             var message = "失败";
             var success = false;
             var editCommitCount = 0;
+            var @namespace = $"refs/original/{DateTime.Now:yyMMddHHmmsss}/";
+            
+          
             repository.Refs.RewriteHistory(new RewriteHistoryOptions
             {
-                BackupRefsNamespace = $"refs/heads/backup/{DateTime.Now:yyMMddHHmmsss}/",
+                BackupRefsNamespace = @namespace,
                 CommitHeaderRewriter = commit =>
                 {
                     var info = CommitRewriteInfo.From(commit);
@@ -45,7 +49,7 @@ namespace GitTool.CLI
                     success = true;
                 }
             }, repository.Commits);
-
+            
             return (success, message);
         }
     }
