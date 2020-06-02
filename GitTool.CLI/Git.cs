@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using LibGit2Sharp;
 
 namespace GitTool.CLI
@@ -16,13 +15,12 @@ namespace GitTool.CLI
         public (bool success, string message) UpdateAuthor(string email, GitAuthor newAuthor)
         {
             if (string.IsNullOrEmpty(email)) return (false, "未指定邮箱地址");
-            var repository = new Repository(repositoryPath);
+            using var repository = new Repository(Repository.Discover(repositoryPath));
             var message = "失败";
             var success = false;
             var editCommitCount = 0;
             var @namespace = $"refs/original/{DateTime.Now:yyMMddHHmmsss}/";
-            
-          
+
             repository.Refs.RewriteHistory(new RewriteHistoryOptions
             {
                 BackupRefsNamespace = @namespace,
@@ -49,7 +47,7 @@ namespace GitTool.CLI
                     success = true;
                 }
             }, repository.Commits);
-            
+
             return (success, message);
         }
     }
