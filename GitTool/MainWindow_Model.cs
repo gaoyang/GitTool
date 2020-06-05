@@ -77,7 +77,7 @@ namespace GitTool
             dialog.ShowDialog();
 
             var keyDir = dialog.FileName;
-            var xmlKey = RsaKeyGenerator.XmlKey(2048);
+            var xmlKey = RsaKeyGenerator.Pkcs8Key(2048, true);
 
             File.WriteAllText(Path.Combine(keyDir, $"{DateTime.Now:yyyyMMddHHmmssfff}.private"), xmlKey[0]);
             File.WriteAllText(Path.Combine(keyDir, $"{DateTime.Now:yyyyMMddHHmmssfff}.public"), xmlKey[1]);
