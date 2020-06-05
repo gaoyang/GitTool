@@ -26,6 +26,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -52,6 +53,9 @@
 
         <Button Grid.Row="1" Grid.Column="6" Content="执行更新" Command="{Binding UpdateCommand}" />
         
-        <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding Message.Value}" Foreground="{Binding Message.Key}"/>
+        <Button Grid.Row="2" Grid.Column="6" Content="生成 RSA 密钥对" Command="{Binding GenRsaKeyCommand}" />
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="7" Text="{Binding Message.Value}" Foreground="{Binding Message.Key}"/>
+        
     </Grid>
 </Window>
