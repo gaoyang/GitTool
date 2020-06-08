@@ -30,7 +30,8 @@ namespace GitTool.CLI
                     var info = CommitRewriteInfo.From(commit);
                     if (info.Author.Email == email && info.Author.Name != newAuthor.Name)
                     {
-                        info.Author = new Signature(newAuthor.Name, newAuthor.Email, DateTimeOffset.Now);
+                        info.Author = new Signature(newAuthor.Name, newAuthor.Email, info.Author.When);
+                        info.Committer = new Signature(newAuthor.Name, newAuthor.Email, info.Committer.When);
                         editCommitCount++;
                         return info;
                     }

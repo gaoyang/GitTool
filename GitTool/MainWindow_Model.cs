@@ -14,7 +14,7 @@ namespace GitTool
 {
     public class MainWindow_Model : INotifyPropertyChanged
     {
-        public string RepositoryPath { get; set; } = @"D:\SourceCode\Me\lgy-studio";
+        public string RepositoryPath { get; set; }
         public string OldEmail { get; set; }
         public string NewName { get; set; }
         public string NewEmail { get; set; }
