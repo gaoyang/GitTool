@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using LibGit2Sharp;
 
 namespace GitTool.CLI
@@ -21,14 +22,14 @@ namespace GitTool.CLI
             var success = false;
             var editCommitCount = 0;
             var @namespace = $"refs/original/{DateTime.Now:yyMMddHHmmsss}/";
-
+            
             repository.Refs.RewriteHistory(new RewriteHistoryOptions
             {
                 BackupRefsNamespace = @namespace,
                 CommitHeaderRewriter = commit =>
                 {
                     var info = CommitRewriteInfo.From(commit);
-                    if (info.Author.Email == email && info.Author.Name != newAuthor.Name)
+                    if (info.Author.Email == email)
                     {
                         info.Author = new Signature(newAuthor.Name, newAuthor.Email, info.Author.When);
                         info.Committer = new Signature(newAuthor.Name, newAuthor.Email, info.Committer.When);

@@ -74,7 +74,7 @@ namespace GitTool
         void OnGenRsaKey()
         {
             var dialog = new WPFFolderBrowserDialog();
-            dialog.ShowDialog();
+            if (dialog.ShowDialog() != true) return;
 
             var keyDir = dialog.FileName;
             var xmlKey = RsaKeyGenerator.Pkcs8Key(2048, true);
@@ -84,7 +84,6 @@ namespace GitTool
 
             Process.Start("explorer.exe", keyDir);
             // new RsaXmlUtil().PrivateRsa.
-            
         }
     }
 }
